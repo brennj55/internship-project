@@ -23,20 +23,26 @@ var WIDTH = 1000,
     Data_url = '../../../jsons/StudentPerformance.json',
     htmlID = "#studentPerformanceChart";
 
+//set up svg. 
+var svg = d3.select(htmlID).append("svg")
+	.attr("width", WIDTH).attr("height", HEIGTH)
+	.attr("shape-rendering", "auto");
+
+
 //Async function that will populate data and create graph. 
 d3.json(Data_url, function (studentData) 
 { 
-  var passes = [];
-  var fails = [];
+	var passes = [];
+  	var fails = [];
 
-  //seperate the studentData into passes and fails.
-  for (var i = 0; i < studentData.length; i++) 
-  {
-    //make a point, push it to correct class, 1 if pass, 0 if fail. 
-    point = { x: studentData[i].x, y: studentData[i].y, p: studentData[i].p};
-    if (studentData[i].c == 1) passes.push(point);
-    else fails.push(point);
-  }
+	//seperate the studentData into passes and fails.
+  	for (var i = 0; i < studentData.length; i++) 
+  	{
+    	//make a point, push it to correct class, 1 if pass, 0 if fail. 
+    	point = { x: studentData[i].x, y: studentData[i].y, p: studentData[i].p};
+    	if (studentData[i].c == 1) passes.push(point);
+    	else fails.push(point);
+  	}
 
   //go through data and find max and mins for domains on axis's. 
   var xMax = d3.max(studentData, function(d) { return d.x; }),
@@ -46,28 +52,14 @@ d3.json(Data_url, function (studentData)
 
   //set up the axis's. Range based on padding and svg size. 
   var xScale = d3.scale.linear().domain([xMin, xMax]).range([left_pad, WIDTH-pad*5]),
-      yScale = d3.scale.linear().domain([yMin, yMax]).range([pad, HEIGTH-pad*2]);
+      yScale = d3.scale.linear().domain([yMax, yMin]).range([pad, HEIGTH-pad*2]);
 
   xAxis = d3.svg.axis().scale(xScale).orient("bottom"),
   yAxis = d3.svg.axis().scale(yScale).orient("left");
 
-  //set up svg. 
-  var svg = d3.select(htmlID)
-    .append("svg")
-    .attr("width", WIDTH)
-    .attr("height", HEIGTH)
-    .attr("shape-rendering", "auto");
-
-  //add the axis's. 
-  svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate(0, "+(HEIGTH-pad)+")")
-    .call(xAxis);
-
-  svg.append("g")
-    .attr("class", "axis")
-    .attr("transform", "translate("+(left_pad-pad)+", 0)")
-    .call(yAxis);
+	//add the axis's
+	addGElement("translate(0, "+(HEIGTH-pad)+")", xAxis)
+	addGElement("translate("+(left_pad-pad)+", 0)", yAxis)
 
   //Add all passes
   svg.selectAll("circle")
@@ -162,6 +154,14 @@ d3.json(Data_url, function (studentData)
 
 });
 
+
+function addGElement(translation, call)
+{
+	svg.append("g")
+    .attr("class", "axis")
+    .attr("transform", translation)
+    .call(call);
+}
 
 // d3.legend.js 
 // (C) 2012 ziggy.jonsson.nyc@gmail.com
