@@ -22,7 +22,7 @@ var PAD = 18,
     LEFT_PAD = 100;
 
 //url and id for json and html docs. 
-var DATA_URL = '../../../jsons/StudentPerformance.json',
+var DATA_URL = '../../../jsons/students.json',
     HTML_ID = "#studentPerformanceChart";
 
 //shape dimensions
@@ -30,8 +30,10 @@ var SQUARE_SIZE = 5,
 	CIRCLE_RADIUS = 2.5;
 
 //student data and lo/hi values for axis's.
-var passes = [],
+var studentData,
+	passes = [],
 	fails = [],
+	classes = [[], []],
 	xMax, yMax, 
 	xMin, yMin;
 
@@ -48,7 +50,20 @@ var svg = d3.select(HTML_ID).append("svg")
 d3.json(DATA_URL, function (studentData) 
 { 
 	//initalise and set up the graph.  
-	partitionData(studentData);
+	initGraph(studentData);
+ 	// draw legend, set up Slider
+ 	initSlider(studentData)
+ 	addLegend();
+});
+
+
+/* HELPER FUNCTIONS FOR JSON DRIVEN GRAPH. */
+
+//set up the graph. 
+function initGraph(data)
+{
+	studentData = data;
+	partitionData(studentData[0]);
 	findMaxMin(studentData);
 	setScales();
 
@@ -57,83 +72,113 @@ d3.json(DATA_URL, function (studentData)
     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 	//add the axis's
-	addGElement("translate(0, "+(HEIGTH-PAD)+")", xAxis)
-	addGElement("translate("+(LEFT_PAD-PAD)+", 0)", yAxis)
+	addGElement("translate(0, "+(HEIGTH-PAD)+")", xAxis, "x")
+	addGElement("translate("+(LEFT_PAD-PAD)+", 0)", yAxis, "y")
 
     //Add all passes and fails on the graph.
-    addPoints(passes, "circle");  
-    addPoints(fails, "rect");
- 
- 	// draw legend
- 	addLegend();
-});
+    addPoints(classes[1], "circle");  
+    addPoints(classes[0], "rect");
+}
 
-/* HELPER FUNCTIONS FOR JSON DRIVEN GRAPH. */
 //seperate the passes from the fails. 
 function partitionData(data)
 {
+	//ensure passes and fails are empty
+	//we need to make sure it is fresh for pushing new data
+	classes = [[], []];
+
 	//seperate the studentData into passes and fails.
   	for (var i = 0; i < data.length; i++) 
   	{
-        //make a point, push it to correct class, 1 if pass, 0 if fail. 
-    	point = { x: data[i].x, y: data[i].y, p: data[i].p};
-    	if (data[i].c == 1) passes.push(point);
-    	else fails.push(point);
+        if (data[i].c == 1) classes[1].push(data[i]);
+        else classes[0].push(data[i]);
   	}
 }
 
 //set the x/yMax/Minv values given an array. 
 function findMaxMin(data)
 {
+	//data is an array of two arrays.
+	//split two arrays. 
+    xArray = getXValues(data);
+    yArray = getYValues(data);
 	//go through data and find max and mins for domains on axis's. 
-    xMax = d3.max(data, function(d) { return d.x; }),
-    yMax = d3.max(data, function(d) { return d.y; }),
-    xMin = d3.min(data, function(d) { return d.x; }),
-    yMin = d3.min(data, function(d) { return d.y; });
+    xMax = d3.max(xArray),
+    yMax = d3.max(yArray),
+    xMin = d3.min(xArray),
+    yMin = d3.min(yArray);
+}
+
+function getXValues(data)
+{
+	x = [];
+	for (var i = 0; i < data.length; i++)
+	{
+		for (var j = 0; j < data[i].length; j++)x.push(data[i][j].x);
+	}
+	return x;
+}
+
+function getYValues(data)
+{
+	y = [];
+	for (var i = 0; i < data.length; i++)
+	{
+		for (var j = 0; j < data[i].length; j++) y.push(data[i][j].y);
+	}
+	return y;
 }
 
 //set up the axis's. Range based on padding and svg size. 
 function setScales()
 {
-    xScale = d3.scale.linear().domain([xMin, xMax]).range([LEFT_PAD, WIDTH-PAD]),
-    yScale = d3.scale.linear().domain([yMax, yMin]).range([PAD, HEIGTH-PAD]);
+    xScale = d3.scale.linear().domain([xMin, xMax]).range([LEFT_PAD, WIDTH-PAD*5]),
+    yScale = d3.scale.linear().domain([yMax, yMin]).range([PAD, HEIGTH-PAD*2]);
 }
 
 //add a group element given its translation and what to call. 
-function addGElement(translation, call)
+function addGElement(translation, call, axis)
 {
 	svg.append("g")
-    	.attr("class", "axis")
+    	.attr("class", axis + " axis")
     	.attr("transform", translation)
     	.call(call);
 }
 
 //plot every point in array on graph. 
-function addPoints(d, shape)
+function addPoints(arrayOfPoints, shape)
 {
 	svg.selectAll(shape)
-		.data(d)
+		.data(arrayOfPoints)
         .enter()
         .append(shape)
-        .attr(pointObject(shape, d));
+        .each(function (d) { point = d3.select(this); point.attr(pointObject(d)); })
         classify(shape);
 }
 
 //create and return objects based on given shape.
-function pointObject(shape, d)
+function pointObject(d)
 {
-	if (shape == "circle") return {
-		cx: function(d) { return xScale(d.x); }, 
-		cy: function(d) { return yScale(d.y); },
-		r: CIRCLE_RADIUS
-	};
-
-	else if (shape == "rect") return {
-		width: SQUARE_SIZE,
-		height: SQUARE_SIZE,
-		x: function (d) { return xScale(d.x); },
-		y: function (d) { return yScale(d.y); }
-	};
+	if (d.c == 1) 
+	{
+		return {
+			cx: function(d) { return xScale(d.x); }, 
+			cy: function(d) { return yScale(d.y); },
+			r: CIRCLE_RADIUS,
+			class: "point"
+		};
+	}	
+		
+	else if (d.c == 0) 
+	{
+		return {
+			width: SQUARE_SIZE,
+			height: SQUARE_SIZE,
+			x: function (d) { return xScale(d.x); },
+			y: function (d) { return yScale(d.y); },
+			class: "point"
+		};
+	}
 }
 
 //style an object to its classification. 
@@ -149,7 +194,7 @@ function classify(shape)
 }
 
 function addLegend()
-{/*
+{
 	key = ["True Positive", "False Positive", "True Negative", "False Negative"];
   	var legend = svg.selectAll(".legend")
       	.data(key)
@@ -201,7 +246,60 @@ function addLegend()
       	.attr("y", 9)
       	.attr("dy", ".35em")
       	.style("text-anchor", "end")
-      	.text(function(d) { return d;}) */
+      	.text(function(d) { return d;})
+}
+
+//set up slider.
+function initSlider(data)
+{
+	$(function() 
+	{
+	    $( "#slider" ).slider
+	    ({
+	    	value:1,
+	      	min: 1,
+	      	max: data.length,
+	      	step: 1,
+	      	slide: function( event, ui ) 
+	      	{ 
+	      		$( "#amount" ).val( ui.value ); 
+	      		nextDataSet(data, ui.value - 1);
+	      	}
+	    });
+	    $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
+	});
+}
+
+
+//slider transition event function. changes values according to slider value
+//passed in. 
+function nextDataSet(d, value)
+{
+	//put in the new data.
+	partitionData(d[value]);	
+	//Update all shapes
+	svg.selectAll("circle")
+		.data(classes[1])		
+		.each(function (d) 
+		{ 
+				point = d3.select(this) 
+				.transition()
+				.duration(1000)
+				point.attr(pointObject(d)); 
+
+		})
+		classify("circle");
+
+	svg.selectAll("rect")
+		.data(classes[0])	
+		.each(function (d) 
+			{ 
+				point = d3.select(this) 
+				.transition()
+				.duration(1000)
+				point.attr(pointObject(d));  
+			})
+		classify("rect")
 }
 
 // d3.legend.js 
