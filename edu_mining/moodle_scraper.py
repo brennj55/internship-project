@@ -61,8 +61,6 @@ courses_df = courses_df[courses_df.year.str.contains('20../20..')]
 # Exclude courses with no name
 courses_df = courses_df[courses_df.course_name != '']
 
-courses_df.sort_index()[:10]
-
 
 # In[6]:
 
