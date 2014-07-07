@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>Hello {{ lecturer }}</h1>
+
+
+{% if noModules %}
+no modules.
+{% endif %}
+<ul>
+{% for module in modules %}
+	<li><a href="/modules/{{module}}">{{ module }}</a></li>
+{% endfor %}
+</ul>
+
+
+
+{% endblock %}

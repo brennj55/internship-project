@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatiable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+		<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.css">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+        <script src="{{url_for('static', filename='js/bootstrap/bootstrap.min.js')}}"></script>
+
+        <title>{{title}}</title>
+    </head>
+
+    <body>
+		
+		<!-- Navifation. -->
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="container-fluid">
+				<div class="navbar-header">
+		      		<button type="button" class="navbar-toggle" 
+		      			data-toggle="collapse" data-target=
+		      				"#bs-example-navbar-collapse-1">
+				        <span class="sr-only">Toggle navigation</span>
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+				        <span class="icon-bar"></span>
+		      		</button>
+		      		<a class="navbar-brand" href="/">GradeWatch</a>
+		    	</div>
+			</div>
+		</nav>
+		<!-- End Navifation. -->
+		
+        <div class="container-fluid">
+        	{% block content %}
+        	{% endblock %}
+        </div>
+
+        
+
+        <!--- NEEED TO FIX THIS SO THAT IT IS ONLY IN MODULES_HOME. -->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
+        <script src="{{url_for('static', filename='js/graphs/buttonSwitch.js')}}"></script>
+        
+    </body>
+
+</html>
