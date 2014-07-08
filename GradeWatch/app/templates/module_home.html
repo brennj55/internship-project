@@ -83,7 +83,7 @@
 			</div>
 			
 			<div id="studentTableInfo">
-				<table class="table table-hover table-condensed">
+				<table class="table table-hover table-condensed" id="studentTable">
 					<thead>
 						<tr>
 							<th><strong>Name</strong></th>
@@ -114,9 +114,13 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"></script>
 <script src="{{url_for('static', filename='js/graphs/classifierAccuracy.js')}}"></script>
 <script src="{{url_for('static', filename='js/graphs/StudentPerformance.js')}}"></script>
+<script src="{{url_for('static', filename='js/tablesorter/jquery.tablesorter.min.js')}}"></script> 
 <script>
 	classifyGraph({{ classifier_data | safe }}, {{ baseline | safe }});
 	studentPerformanceGraph({{ student_data | safe }});
+
+	$(document).ready(function() { $("#studentTable").tablesorter({sortList: [[0,0]]}); } 
+); 
 </script>
 
 {% endblock %}
