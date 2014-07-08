@@ -77,24 +77,34 @@
 	<div class="col-md-10 col-md-offset-1">
 		<div class="panel panel-default">
 			
-			<div class="panel-heading text-center"><strong>Student Data</strong></div>
-			<table class="table text-center">
-				<tr>
-					<td><strong>Name</strong></td>
-					<td><strong>Student Number</strong></td>
-					<td><strong>Prediction</strong></td>
-					<td><strong>Confidence</strong></td>
-				</tr>
-
-				{% for student in student_data[0] %}
-				<tr>
-					<td>{{ student['name'] }}</td>
-					<td>{{ student['student_id'] }}</td>
-					<td>{{ student['p'] }}</td>
-					 <td>{{ student['c'] }}</td>
-				</tr>
-				{% endfor %}
-			</table>
+			<div class="panel-heading text-center">
+				<strong>Student Data</strong>
+				<span class="caret" id="tableToggle"></span>
+			</div>
+			
+			<div id="studentTableInfo">
+				<table class="table table-hover table-condensed">
+					<thead>
+						<tr>
+							<th><strong>Name</strong></th>
+							<th><strong>Student Number</strong></th>
+							<th><strong>Prediction</strong></th>
+							<th><strong>Confidence</strong></th>
+						</tr>
+					</thead>
+					
+					<tbody>
+						{% for student in student_data[0] %}
+						<tr>
+							<td>{{ student['name'] }}</td>
+							<td>{{ student['student_id'] }}</td>
+							<td>{{ student['p'] }}</td>
+							<td>not added yet</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </div>
