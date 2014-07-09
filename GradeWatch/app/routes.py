@@ -2,7 +2,7 @@ from pymongo import MongoClient
 from json import dumps
 from flask import Flask, render_template
 
-client = MongoClient('136.206.19.73', 27017)
+client = MongoClient('136.206.19.216', 27017)
 client.edu.authenticate('john', 'nodeSucks')
 lecturers = client.edu.lecturers
 modules = client.edu.graphs
@@ -58,6 +58,6 @@ def module(module = None):
 		return 'No such module.'
 
 if __name__ == '__main__':
-	app.run(debug = True)
+	app.run(debug = True, host = '0.0.0.0')
 
 

@@ -263,6 +263,7 @@ function initSlider(data)
 	      	{ 
 	      		$( "#amount" ).val( ui.value ); 
 	      		nextDataSet(data, ui.value - 1);
+            createTable(studentData[ui.value - 1]);
 	      	}
 	    });
 	    $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
@@ -298,6 +299,14 @@ function nextDataSet(d, value)
 				point.attr(pointObject(d));  
 			})
 		classify("rect")
+}
+
+function createTable(studentData)
+{
+  $( "#sInfo > tr" ).remove();
+  $.each(studentData, function(index){
+    $('#sInfo').append('<tr><td>' + studentData[index].name + '</td><td>' + studentData[index].student_id + '</td><td>' + studentData[index].y + '</td><td>' + studentData[index].x + '</td></tr>');
+  })
 }
 
 // d3.legend.js 
