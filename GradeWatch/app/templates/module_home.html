@@ -104,23 +104,41 @@
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"></script>
+
+<script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+
 <script src="{{url_for('static', filename='js/graphs/classifierAccuracy.js')}}"></script>
-<script src="{{url_for('static', filename='js/tablesorter/jquery.tablesorter.min.js')}}"></script> 
 <script src="{{url_for('static', filename='js/graphs/StudentPerformance.js')}}"></script>
-<script src="{{url_for('static', filename='js/tablesorter/jQuery.FilterTable/jquery.filtertable.js')}}"></script>
+
 
 <script>
 	studentData = {{ student_data | safe }};
 	classifyGraph({{ classifier_data | safe }}, {{ baseline | safe }});
 	studentPerformanceGraph(studentData);
-	createTable(studentData[0]);
 
-	$(document).ready(function() 
-	{ 
-		$("#studentTable").filterTable({
-			inputSelector: "#searchBox",
-		});
-	}); 
+	var table;
+	$(document).ready(function()
+	{
+    	table = $('#studentTable').DataTable({
+    		data: studentData[1],
+    		"columns": [
+            { "data": "name" },
+            { "data": "student_id" },
+            { "data": "x" },
+            { "data": "y" }
+        ]
+    	});
+    	table.on('search.dt', function(term){ console.log(term) }) 
+	});
+
+
+	function newData(i)
+	{
+		table.clear();
+		table.rows.add(studentData[i])
+		table.draw();
+	}
+
 </script>
 
 {% endblock %}
