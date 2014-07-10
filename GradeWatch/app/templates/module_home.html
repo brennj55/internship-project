@@ -112,6 +112,7 @@
 
 
 <script>
+	//todo: fix up this and put it in one of the other files. 
 	studentData = {{ student_data | safe }};
 	classifyGraph({{ classifier_data | safe }}, {{ baseline | safe }});
 	studentPerformanceGraph(studentData);
@@ -132,6 +133,7 @@
 	});
 
 
+	//updates the table with a new studentdata set.
 	function newData(i)
 	{
 		table.clear();
