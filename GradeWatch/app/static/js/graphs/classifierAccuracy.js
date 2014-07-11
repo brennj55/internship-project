@@ -1,6 +1,5 @@
 function classifyGraph(classifierData, baseline)	
 {
-	console.log("I'm here.");
 	var weeks = [];
 	var data = classifierData;
 

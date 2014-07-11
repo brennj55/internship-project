@@ -59,16 +59,15 @@ function studentPerformanceGraph(studentData)
 /* HELPER FUNCTIONS FOR JSON DRIVEN GRAPH. */
 
 //set up the graph. 
-function initGraph(data)
+function initGraph(studentData)
 {
-	studentData = data;
 	partitionData(studentData[0]);
 	findMaxMin(studentData);
 	setScales();
 
 	//create the axis's
-    xAxis = d3.svg.axis().scale(xScale).orient("bottom"),
-    yAxis = d3.svg.axis().scale(yScale).orient("left");
+  xAxis = d3.svg.axis().scale(xScale).orient("bottom"),
+  yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 	//add the axis's
 	addGElement("translate(0, "+(HEIGTH-PAD)+")", xAxis, "x")
@@ -164,7 +163,8 @@ function pointObject(d)
 			cx: function(d) { return xScale(d.x); }, 
 			cy: function(d) { return yScale(d.y); },
 			r: CIRCLE_RADIUS,
-			class: "point"
+			class: "point",
+      id: function(d) { return d.student_id; }
 		};
 	}	
 		
@@ -175,7 +175,8 @@ function pointObject(d)
 			height: SQUARE_SIZE,
 			x: function (d) { return xScale(d.x); },
 			y: function (d) { return yScale(d.y); },
-			class: "point"
+			class: "point",
+      id: function(d) { return d.student_id; }
 		};
 	}
 }
@@ -264,6 +265,8 @@ function initSlider(data)
 	      		$( "#amount" ).val( ui.value ); 
 	      		nextDataSet(data, ui.value - 1);
             newData(ui.value - 1);
+            currentStudent = getInfo(getCurentID());
+            displayProfile(currentStudent);
 	      	}
 	    });
 	    $( "#amount" ).val( $( "#slider" ).slider( "value" ) );
