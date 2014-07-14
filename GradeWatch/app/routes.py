@@ -16,6 +16,7 @@ def home():
 		title="Login" )
 
 @app.route('/lecturers/<username>')
+@app.route('/lecturers/<username>/')
 def user(username = None):
 	lecturer_info = lecturers.find_one({'_id': username})
 
@@ -34,9 +35,19 @@ def user(username = None):
 			title = 'Error!'
 		)
 
+@app.route('/lecturers')
+@app.route('/lecturers/')
+def list_lecturers():
+	names = extract_names(lecturers, 'name')
+	return render_template('list.html',
+		listing = "lecturers",
+		names = names
+	)
+
 @app.route('/modules/<module>')
+@app.route('/modules/<module>/')
 def module(module = None):
-	module_info = modules.find_one({'_id': module})
+	module_info = modules.find_one({'_id': module.upper()})
 
 	if (module_info != None):
 		module_name = module_info['name']
@@ -63,7 +74,22 @@ def module(module = None):
 			title = 'Error!'
 		)
 
+@app.route('/modules')
+@app.route('/modules/')
+def list_modules():
+	names = extract_names(modules, 'name')
+	return render_template('list.html',
+		listing = "modules",
+		names = names
+	)
+
+def extract_names(name_list, attribute):
+	names = []
+	for name in name_list.find():
+		names.append({'name': name[attribute], 'id': name['_id']})
+	return names
+
 if __name__ == '__main__':
-	app.run(debug = True)
+	app.run(debug = True, host = '0.0.0.0')
 
 
