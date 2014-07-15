@@ -37,13 +37,14 @@
 <div id="SPGraph">
 	
 	<div class="row spacer">
-		<div class="col-md-6 col-md-offset-2" id="studentPerformance"></div>
+		<div class="col-md-6 col-md-offset-1" id="studentPerformance"></div>
 
-		<div class="col-md-2 spacerLarge">
+		<div class="col-md-3 spacerLarge col-md-offset-1">
 			<div class="panel panel-default">	
 				<div class="text-center panel-heading"><strong>Student Profile</strong></div>
 				<!-- Table -->
-				<table class="table text-center">
+				<table class="table text-center" id="StudentProfile">
+					
 				</table>
 			</div>
 		</div>
@@ -54,26 +55,25 @@
 			<div id="slider"></div>
 		</div>
 	</div>
-
 </div>
 <!-- End Student Performance -->
 
-<!-- Search bar -->
+<!-- Search bar
 <div class="row spacer">
 	<div class="col-md-8 col-md-offset-2">
 
 		<form class="" role="search">
 			<div class="form-group">
-				<input type="text" class="form-control" placeholder="Search">
+				<input id="searchBox" type="text" class="form-control" placeholder="Search for a name or student number...">
 			</div>
 		</form>
 
 	</div>
 </div>
-<!-- End Search bar -->
+End Search bar -->
 
 <!-- Table of students. -->
-<div class="row spacer">
+<div class="row spacer spacerBottom">
 	<div class="col-md-10 col-md-offset-1">
 		<div class="panel panel-default">
 			
@@ -83,7 +83,7 @@
 			</div>
 			
 			<div id="studentTableInfo">
-				<table class="table table-hover table-condensed">
+				<table class="table table-hover table-condensed table-responsive" id="studentTable">
 					<thead>
 						<tr>
 							<th><strong>Name</strong></th>
@@ -93,15 +93,7 @@
 						</tr>
 					</thead>
 					
-					<tbody>
-						{% for student in student_data[0] %}
-						<tr>
-							<td>{{ student['name'] }}</td>
-							<td>{{ student['student_id'] }}</td>
-							<td>{{ student['p'] }}</td>
-							<td>not added yet</td>
-						</tr>
-						{% endfor %}
+					<tbody id="sInfo">
 					</tbody>
 				</table>
 			</div>
@@ -112,11 +104,75 @@
 
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.9/d3.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.4.6/rickshaw.min.js"></script>
+<script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script src="//cdn.datatables.net/plug-ins/be7019ee387/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="{{url_for('static', filename='js/graphs/classifierAccuracy.js')}}"></script>
 <script src="{{url_for('static', filename='js/graphs/StudentPerformance.js')}}"></script>
 <script>
+	//todo: fix up this and put it in one of the other files. 
+	studentData = {{ student_data | safe }};
 	classifyGraph({{ classifier_data | safe }}, {{ baseline | safe }});
-	studentPerformanceGraph({{ student_data | safe }});
+	studentPerformanceGraph(studentData);
+
+	var table;
+	var currentData = studentData[0];
+	$(document).ready(function()
+	{
+    	table = $('#studentTable').DataTable({
+    		data: currentData,
+    		"columns": 
+    		[
+	            { "data": "name" },
+	            { "data": "student_id" },
+	            { "data": "x" },
+	            { "data": "y" }
+        	]
+        	
+    	});
+
+    	
+	});
+
+
+	//updates the table with a new studentdata set.
+	function newData(i)
+	{
+		currentData = studentData[i];
+		table.clear();
+		table.rows.add(currentData);
+		table.draw();
+	}
+
+	$(".point").hover(function(){
+		var pointID = $(this).attr('id');
+		var student = getInfo(pointID);
+		displayProfile(student);
+	});
+
+	function getInfo(target) 
+	{
+  		for(var i = 0; i < currentData.length; ++i)
+  		{
+    		if (currentData[i].student_id == target) { return currentData[i]; }
+  		}	
+  		return -1;
+	}
+
+	function displayProfile(s)
+	{
+		if (s.name == null) return 0;
+		var contents = "<tr><th>Name:</th><td>" + s.name + "</td></tr><tr><th>Student ID:</th><td id='studentNo'>" + s.student_id + "</td></tr><tr><th>Prediction:</th><td>" + s.y + "</td></tr><tr><th>Confidence:</th><td>" + s.x + "</td></tr>";
+
+		profile = $("#StudentProfile");
+		profile.empty();
+		profile.append(contents);
+	}
+
+	function getCurentID()
+	{
+		//get the student currently in the profile.
+		return $("#studentNo").text();
+	}
 </script>
 
 {% endblock %}
