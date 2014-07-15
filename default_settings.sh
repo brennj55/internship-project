@@ -6,3 +6,4 @@
 
 export MONGO_USER=
 export MONGO_PWD=
+export MONGO_IP=
