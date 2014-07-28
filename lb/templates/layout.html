@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Roll with the punches.</title>
+</head>
+<body>
+
+<div class="chart">
+
+</div>
+
+
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+
+<script> 
+	var data = {{ json | tojson | safe}}; 
+	
+	//this will be passed via jsonflask. need to make hidden?
+	var myID = data.students[49].studentNo;
+	
+	data.students.sort(sortStudents);
+	function sortStudents(a, b) { return (a.confidence - b.confidence) }
+</script>
+<script src="{{ url_for('static', filename='leaderboard.js') }}"></script>
+
+</body>
+</html>
