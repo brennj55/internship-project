@@ -21,13 +21,16 @@ function render(dataset, id)
 	svg = d3.select("svg");
 
 	//colour scale.
-	var colour = d3.scale.linear()
-		.range(["hsl(0,100%,50%)", "hsl(100,50%,50%)"])
-		.interpolate(interpolateHsl);
+	var failColour = d3.scale.linear()
+		.range(["red", "red"]);
+
+	var passColour = d3.scale.linear()
+		.range(["#3822ac", "#3822ac"]);
+		//.interpolate(interpolateHsl);
 
 	var myIDRange = d3.scale.linear()
-		.range(["hsl(219, 100, 20)", "hsl(240,100,33)"])
-		.interpolate(interpolateHsl);
+		.range(["#fdf603", "#fdf603"]);
+		//.interpolate(interpolateHsl);
 
 	function interpolateHsl(a, b) 
 	{
@@ -62,8 +65,9 @@ function render(dataset, id)
 		.duration(1000)
 		.attr("fill", function(d)
 		{ 
-			if (d.studentNo == id || d.myID) return myIDRange(d.confidence); 
-			else return colour(d.confidence); 
+			if (d.studentNo == id || d.myID) return "#fdf603"; 
+			else if (d.confidence < .4) return "#fd3f1e";
+			else return "#3822ac"; 
 		})
 		.attrTween("d", arcTween);
 
@@ -71,8 +75,9 @@ function render(dataset, id)
 		.attr("transform", "translate(" + xPos + "," + yPos +")" )
 		.attr("fill", function(d)
 		{ 
-			if (d.studentNo == id || d.myID) return myIDRange(d.confidence); 
-			else return colour(d.confidence); 
+			if (d.studentNo == id || d.myID) return "#fdf603"; 
+			else if (d.confidence < .4) return "#fd3f1e";
+			else return "#3822ac"; 
 		})
       	.attr("d", drawArc)
       	.each(function(d){ this._current = d; })
@@ -110,7 +115,7 @@ function mouseover(d)
 function partitionStudents(data, myID)
 {
 	var split = [];
-	var splitFactor = 10;
+	var splitFactor = data.length/10;
 
 	for (var i = 0; i < data.length/splitFactor; i++) 
 	{
@@ -125,7 +130,8 @@ function partitionStudents(data, myID)
 			sum += arr[j].confidence; 
 			if (arr[j].studentNo == myID) myIDPresent = true;
 		}
-		sum /= splitFactor;
+		sum /= arr.length;
+		sum = sum.toFixed(2);
 		if (sum < .4) prediction = "Fail";
 		else prediction = "Pass";
 
