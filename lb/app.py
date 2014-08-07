@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-	request = requests.get("http://localhost:5001/modules/CA169/current", auth=('john', 'brennan'))
+	request = requests.get("http://localhost:5001/modules/CA169/weeks/week12", auth=('john', 'brennan'))
 	json = request.json()
 	return render_template('layout.html', json = json, status = request.status_code, items =request.headers.items())
 	
