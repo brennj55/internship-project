@@ -1,27 +1,159 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Roll with the punches.</title>
-</head>
-<body>
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatiable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 
-<div class="chart">
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
 
-</div>
+        <title>Insight Project</title>
+    </head>
 
+    <body>
+    	<!-- Navifation. -->
+		<nav class="navbar navbar-default jumbo" role="navigation">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-4 col-sm-3 col-md-2">
+						<div class="navbar-header">	
+			      			<a class="navbar-brand" href="/"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a>
+			    		</div>
+			    	</div>
+		    	</div>
+			</div>
+		</nav>
+		<!-- End Navifation. -->
 
-<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.2.2/d3.v3.min.js"></script>
+		<!-- Content -->
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<h1 class="text-center">Overview of CA169 for John Brennan</h1>
+				</div>
+			</div>
 
-<script> 
-	var data = {{ json | tojson | safe}}; 
-	
-	//this will be passed via jsonflask. need to make hidden?
-	var myID = data.students[49].studentNo;
-	
-	data.students.sort(sortStudents);
-	function sortStudents(a, b) { return (a.confidence - b.confidence) }
-</script>
-<script src="{{ url_for('static', filename='leaderboard.js') }}"></script>
+			<div class="row">
+				<div class="col-md-5 col-md-offset-1">
 
-</body>
+					<!-- Time Limit description -->
+					<div class="row">
+						<div class="col-md-12">
+							<h2>This page has a time limit!</h2>
+							<p>You can only view this page for a certain amount of time before the page expires,
+							please be wise and view it carefully before it is gone forever!</p>
+						</div>
+					</div>
+					<!-- End Time Limit description -->
+
+					<!-- Table for legend. -->
+					<div class="panel panel-default text-center">
+						<div class="panel-heading">
+					    	<h3 class="panel-title "><strong>Legend</strong></h3>
+					  	</div>
+					  	
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<td><span class="badge red">Red</span></td>
+									<td>Hasn't reached target</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge blue">Blue</span></td>
+									<td>Has reached target</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge yellow">Yellow</span></td>
+									<td>This is you.</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge green">Green</span></td>
+									<td>Item currently highlighted</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge grey">Grey circle</span></td>
+									<td>Click to go back to the top level</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- End Table for legend. -->
+
+					<!-- What is this info -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3>What is this?</h3>
+							<p class="well">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nulla nisi, aliquam ac dignissim non, elementum vulputate sapien. Suspendisse nunc erat, ullamcorper sit amet orci et, tristique feugiat odio. Sed eget erat tellus. Sed vitae dui blandit, vestibulum massa vitae, rhoncus urna. Mauris sed porta dui, id feugiat leo. Aenean non egestas nisl. Donec iaculis elit lectus, id laoreet massa lobortis ut. Sed eu quam nec odio tincidunt condimentum et vitae mi. Nullam consectetur tortor sit amet leo dapibus imperdiet sit amet vitae purus. Pellentesque sodales, nunc eu adipiscing placerat, lectus orci vulputate lorem, in cursus dolor purus nec libero. Pellentesque molestie euismod enim. In et imperdiet leo. Suspendisse potenti. In consequat leo ac pretium gravida. Donec at enim metus.</p>
+						</div>
+					</div>
+					<!-- End What is this info -->
+				</div>
+
+				<div class="col-md-6 text-center">
+					<h2>Rankings</h2>
+					<h3 id="who">Hover over the bars</h3>	
+	        	 	<div id="chart">
+
+					</div>
+
+					<!-- Time Limit button -->
+					<div class="countdown">
+						<div class="text-center alert alert-danger pull-right" id="clock"></div>
+					</div>
+					<!-- End Time Limit button -->
+				</div>
+			</div>
+		</div>
+		<!-- End Content -->
+
+		<!-- Footer -->
+		<div class="lb-footer">
+			<div class="container">
+	      		<div class="row">
+	      			<div class="col-xs-3 col-md-1 col-md-offset-1">
+	      				<a href="http://www.dcu.ie" target="_blank"><img src="{{ url_for('static', filename='images/dcu.gif') }}" class="img-responsive"></a>
+	      			</div>
+
+	      			<div class="col-xs-3 col-md-1 col-md-offset-3">
+	      				<a href="https://www.insight-centre.org/" target="_blank"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a>
+	      			</div>
+
+	      			<div class="col-xs-3 col-md-1 push-down col-md-offset-3">
+	      				<a href="http://moodle.dcu.ie" target="_blank"><img src="{{ url_for('static', filename='images/moodle.png') }}" class="img-responsive"></a>
+	      			</div>
+	      		</div>
+	      	</div>
+    	</div>
+    	<!-- End Footer -->
+
+    	<div>
+	    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	    	<script src="{{ url_for('static', filename='js/jquery.countdown.js') }}"></script>
+			<script>
+				$('#clock').countdown('2020/10/10 12:34:56').on('update.countdown', function(event) 
+				{
+					var format = '%M:%S';
+					$(this).html(event.strftime(format));
+				})
+
+			</script>
+	    	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+			<script> 
+				var data = {{ json | tojson | safe}}; 
+				
+				//this will be passed via jsonflask. need to make hidden?
+				var myID = data.students[35].studentNo;
+				
+				data.students.sort(sortStudents);
+				function sortStudents(a, b) { return (a.confidence - b.confidence) }
+			</script>
+			<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+		</div>
+    </body>
 </html>
