@@ -5,7 +5,7 @@ from random import random, randrange
 import names
 
 app = Flask(__name__)
-client = MongoClient('136.206.19.73', 27017)
+client = MongoClient('136.206.19.216', 27017)
 client.edu.authenticate('john', 'nodeSucks')
 gw = client.edu.gw
 
@@ -14,6 +14,7 @@ student_set = {}
 from flask.ext.httpauth import HTTPBasicAuth
 auth = HTTPBasicAuth()
 
+#poor authentication NEEDS TO BE CHANGED.
 @auth.get_password
 def get_password(username):
     if username == 'john':
@@ -23,7 +24,7 @@ def get_password(username):
 @auth.error_handler
 def unauthorized():
     return make_response(jsonify( { 'error': 'Unauthorized access' } ), 401)
-
+#poor authentication NEEDS TO BE CHANGED.
 
 # dummy data code and helper methods. 
 def create_student():
