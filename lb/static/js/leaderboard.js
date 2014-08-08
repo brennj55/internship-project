@@ -102,7 +102,7 @@ function initialize(dataset, id)
     		.attr("class", 'click-circle')
         	.attr("transform", "translate(" + xPos + "," + yPos +")" )
         	.attr("r", arcMin*0.85)
-        	.attr("fill", "rgba(201, 201, 201, 0.5)")
+        	.attr("fill", "#e3e3e3")
         	.on("click", function() { render(dataset, id) });
      }
 }
@@ -114,9 +114,6 @@ function mouseover(d)
 	if (d.confidence < .4) target = target + "n't reached target."
 	else target = target + " reached target."
     d3.select("#who").text(target);
-	
-	//d3.select(this)
-		//.attr("fill", "#4cb748");
 }
 
 

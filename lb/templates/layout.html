@@ -19,7 +19,7 @@
 				<div class="row">
 					<div class="col-xs-4 col-sm-3 col-md-2">
 						<div class="navbar-header">	
-			      			<a class="navbar-brand" href="/"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a>
+			      			<!--<a class="navbar-brand" href="/"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a> --> <h1>PredictED</h1>
 			    		</div>
 			    	</div>
 		    	</div>
@@ -31,27 +31,16 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12">
-					<h1 class="text-center">Overview of CA169 for John Brennan</h1>
+					<h1 class="text-center">Overview of {{ module }} for {{ name }}</h1>
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col-md-5 col-md-offset-1">
-
-					<!-- Time Limit description -->
-					<div class="row">
-						<div class="col-md-12">
-							<h2>This page has a time limit!</h2>
-							<p>You can only view this page for a certain amount of time before the page expires,
-							please be wise and view it carefully before it is gone forever!</p>
-						</div>
-					</div>
-					<!-- End Time Limit description -->
-
 					<!-- Table for legend. -->
 					<div class="panel panel-default text-center">
 						<div class="panel-heading">
-					    	<h3 class="panel-title "><strong>Legend</strong></h3>
+					    	
 					  	</div>
 					  	
 						<table class="table table-bordered">
@@ -68,7 +57,7 @@
 
 								<tr>
 									<td><span class="badge yellow">Yellow</span></td>
-									<td>This is you.</td>
+									<td>This is you</td>
 								</tr>
 
 								<tr>
@@ -89,10 +78,29 @@
 					<div class="row">
 						<div class="col-md-12">
 							<h3>What is this?</h3>
-							<p class="well">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam nulla nisi, aliquam ac dignissim non, elementum vulputate sapien. Suspendisse nunc erat, ullamcorper sit amet orci et, tristique feugiat odio. Sed eget erat tellus. Sed vitae dui blandit, vestibulum massa vitae, rhoncus urna. Mauris sed porta dui, id feugiat leo. Aenean non egestas nisl. Donec iaculis elit lectus, id laoreet massa lobortis ut. Sed eu quam nec odio tincidunt condimentum et vitae mi. Nullam consectetur tortor sit amet leo dapibus imperdiet sit amet vitae purus. Pellentesque sodales, nunc eu adipiscing placerat, lectus orci vulputate lorem, in cursus dolor purus nec libero. Pellentesque molestie euismod enim. In et imperdiet leo. Suspendisse potenti. In consequat leo ac pretium gravida. Donec at enim metus.</p>
+							<div class="well well-lg">
+								<p>
+									Welcome to the interactive leaderboard for module {{ module }}. This displays the progress of each student in terms of Moodle engagement in ranked order. Your progress can be seen in the yellow circle. If you lie below the target, this means that our programme predicts that you are at risk of failing this module based on your Moodle activity this week. 
+								</p>
+
+								<p>
+									To increase your score to meet the target you are advised to engage more with the Moodle platform. Moodle is a learning tool to help you with your studies and has been found to correlate with student pass rates across the university.
+								</p>
+							</div>
+							
 						</div>
 					</div>
 					<!-- End What is this info -->
+
+					<!-- Time Limit description -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3>This page has a time limit!</h3>
+							<p>You can only view this page for a certain amount of time before the page expires,
+							please be wise and view it carefully before it is gone forever!</p>
+						</div>
+					</div>
+					<!-- End Time Limit description -->
 				</div>
 
 				<div class="col-md-6 text-center">
@@ -136,10 +144,15 @@
 	    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	    	<script src="{{ url_for('static', filename='js/jquery.countdown.js') }}"></script>
 			<script>
-				$('#clock').countdown('2020/10/10 12:34:56').on('update.countdown', function(event) 
+				THIRITY_MINUTES = 30*60000;
+				$('#clock').countdown(new Date(new Date().getTime() + THIRITY_MINUTES)).on('update.countdown', function(event) 
 				{
 					var format = '%M:%S';
 					$(this).html(event.strftime(format));
+					if (event.strftime(format) == '00:01')
+					{
+						window.location = "http://www.dcu.ie";
+					}
 				})
 
 			</script>
@@ -148,7 +161,7 @@
 				var data = {{ json | tojson | safe}}; 
 				
 				//this will be passed via jsonflask. need to make hidden?
-				var myID = data.students[35].studentNo;
+				var myID = {{ ID }};
 				
 				data.students.sort(sortStudents);
 				function sortStudents(a, b) { return (a.confidence - b.confidence) }

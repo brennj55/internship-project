@@ -1,4 +1,4 @@
-var canvas = d3.select(".chart").append("svg");
+var canvas = d3.select("#chart").append("svg");
 
 canvas.append("text")
 	.attr("class", "explanation");
@@ -6,8 +6,12 @@ canvas.append("text")
 canvas.append("text")
 	.attr("class", "confidence");
 
-var yPos = 300;
-var xPos = 600;
+
+var yPos = $("#chart").height()/3;
+var xPos = $("#chart").width()/4;
+var RED = "#c13146";
+var BLUE = "#3d5ba9";
+var YELLOW = "#ffbc12";
 
 function render(dataset, id)
 {
@@ -20,18 +24,6 @@ function render(dataset, id)
 
 	svg = d3.select("svg");
 
-	//colour scale.
-	var failColour = d3.scale.linear()
-		.range(["red", "red"]);
-
-	var passColour = d3.scale.linear()
-		.range(["#3822ac", "#3822ac"]);
-		//.interpolate(interpolateHsl);
-
-	var myIDRange = d3.scale.linear()
-		.range(["#fdf603", "#fdf603"]);
-		//.interpolate(interpolateHsl);
-
 	function interpolateHsl(a, b) 
 	{
 		var i = d3.interpolateString(a, b);
@@ -40,8 +32,16 @@ function render(dataset, id)
 
 	//function to draw arcs.
 	var drawArc = d3.svg.arc()
-		.innerRadius(function(d, i){ return arcMin + i * arcWidth + arcPad })
-		.outerRadius(function(d, i){ return arcMin + (i + 1) * arcWidth })
+		.innerRadius(function(d, i)
+		{ 
+			if (d.name == 'TARGET') return arcMin + i * arcWidth + arcPad + 1
+			else return arcMin + i * arcWidth + arcPad +1
+		})
+		.outerRadius(function(d, i)
+		{ 
+			if (d.name == 'TARGET') return arcMin + i * arcWidth + arcPad + 1
+			else return arcMin + (i + 1) * arcWidth 
+		})
 		.startAngle(0)
 		.endAngle(function(d){ return d.confidence * 2 * Math.PI; });
 
@@ -65,9 +65,9 @@ function render(dataset, id)
 		.duration(1000)
 		.attr("fill", function(d)
 		{ 
-			if (d.studentNo == id || d.myID) return "#fdf603"; 
-			else if (d.confidence < .4) return "#fd3f1e";
-			else return "#3822ac"; 
+			if (d.studentNo == id || d.myID) return YELLOW; 
+			else if (d.confidence < .4) return RED;
+			else return BLUE; 
 		})
 		.attrTween("d", arcTween);
 
@@ -75,14 +75,19 @@ function render(dataset, id)
 		.attr("transform", "translate(" + xPos + "," + yPos +")" )
 		.attr("fill", function(d)
 		{ 
-			if (d.studentNo == id || d.myID) return "#fdf603"; 
-			else if (d.confidence < .4) return "#fd3f1e";
-			else return "#3822ac"; 
+			if (d.studentNo == id || d.myID) return YELLOW; 
+			else if (d.confidence < .4) return RED;
+			else return BLUE; 
 		})
       	.attr("d", drawArc)
       	.each(function(d){ this._current = d; })
       	.on("click", function(d, i) { if (d.students != undefined) render(d.students, id) })
       	.on("mouseover", mouseover);
+
+    arcs.exit()
+    	.transition(1000)
+    	.attr("fill", "white")
+    	.remove()
 }
 
 function initialize(dataset, id) 
@@ -91,35 +96,25 @@ function initialize(dataset, id)
 	render(dataset, id);
 
     // making the click circle for green arcs
-    	if(!d3.selectAll("circle.click-circle")[0].length) 
-    	{   
-
-    		d3.select("svg").append("circle")
-    			.attr("class", 'click-circle')
-        		.attr("transform", "translate(" + xPos + "," + yPos +")" )
-        		.attr("r", arcMin*0.85)
-        		.attr("fill", "rgba(201, 201, 201, 0.5)")
-        		.on("click", function() { render(dataset, id) });
+    if(!d3.selectAll("circle.click-circle")[0].length) 
+    {   
+    	d3.select("svg").append("circle")
+    		.attr("class", 'click-circle')
+        	.attr("transform", "translate(" + xPos + "," + yPos +")" )
+        	.attr("r", arcMin*0.85)
+        	.attr("fill", "rgba(201, 201, 201, 0.5)")
+        	.on("click", function() { render(dataset, id) });
      }
-
-     
-}
-
-function mouseover(d)
-{
-	var output = d.name + " " + d.prediction;
-    	d3.select("text").text(output).attr("transform", "translate(" + (xPos-50) + "," + (yPos) +")" );
-    	d3.select(".confidence").text(d.confidence).attr("transform", "translate(" + (xPos-50) + "," + (yPos + 30) +")" );
 }
 
 function partitionStudents(data, myID)
 {
 	var split = [];
-	var splitFactor = data.length/10;
+	var splitFactor = Math.sqrt(data.length);
 
-	for (var i = 0; i < data.length/splitFactor; i++) 
+	for (var i = 0; i < splitFactor; i++) 
 	{
-		var name = "Quartile " + (i + 1);
+		var name = "Section " + (i + 1);
 		var sum = 0;
 		var myIDPresent = false;
 		var arr = data.slice(i*splitFactor, i*splitFactor+splitFactor);
@@ -132,14 +127,17 @@ function partitionStudents(data, myID)
 		}
 		sum /= arr.length;
 		sum = sum.toFixed(2);
-		if (sum < .4) prediction = "Fail";
-		else prediction = "Pass";
+
+		//arr[arr.length] = {name: 'TARGET', confidence: '.4', prediction: 'Pass'};
+		arr.sort(sortStudents);
 
 		split[i] = {name: name, confidence: sum, prediction: prediction, students: arr, myID: myIDPresent};
-	};
+	}
 
+	//split[data.length/splitFactor] = {name: 'TARGET', confidence: '.4', prediction: 'Pass'};
+	split.sort(sortStudents);
+	function sortStudents(a, b) { return (a.confidence - b.confidence) }
 	return split;
 }
 
-lol = partitionStudents(data.students, myID);
-initialize(lol, myID)
+initialize(partitionStudents(data.students, myID), myID)
