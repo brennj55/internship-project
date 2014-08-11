@@ -25,7 +25,7 @@ def generate_page(hash_value = None):
 				data['studentNo'] = 'NULL'
 
 		#flip the boolean so the student cannot view it a second time. 
-		hash_storage.update({'_id': hash_in_db['_id']}, {'$set': {'student.has_viewed': True}}, upsert = False, multi = False)
+		#hash_storage.update({'_id': hash_in_db['_id']}, {'$set': {'student.has_viewed': True}}, upsert = False, multi = False)
 
 		#return the page to the studeeent.
 		return render_template('layout.html', json = json, ID = hash_in_db['student']['studentNo'],
@@ -35,4 +35,4 @@ def generate_page(hash_value = None):
 		abort(404)
 
 if __name__ == '__main__':
-	app.run(debug = True)
+	app.run(debug = True, host = '0.0.0.0')

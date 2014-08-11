@@ -7,9 +7,10 @@ canvas.append("text")
 	.attr("class", "confidence");
 
 
-var yPos = $("#chart").height()/3;
-var xPos = $("#chart").width()/4;
-var RED = "#c13146";
+var yPos = $("#chart").height();
+var xPos = $("#chart").width();
+//var RED = "#c13146";
+var RED = 'red';
 var BLUE = "#3d5ba9";
 var YELLOW = "#ffbc12";
 

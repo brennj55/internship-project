@@ -1,12 +1,6 @@
-var canvas = d3.select("#chart").append("svg").attr("height", 600);
+var canvas = d3.select("#chart").append("svg").attr("height", 500).attr("width", 1000);
 
-canvas.append("text")
-	.attr("class", "explanation");
-
-canvas.append("text")
-	.attr("class", "confidence");
-
-
+//constants for positioning and colouring.
 var yPos = $("#chart").height()/2;
 var xPos = $("#chart").width()/2;
 var RED = "#c13146";
@@ -15,33 +9,19 @@ var YELLOW = "#ffbc12";
 
 function render(dataset, id)
 {
+	var scale = d3.scale.linear().domain([1, 15]).range([30, 10]);
+
 	//constants
-	
 	var PI = Math.PI;
 	var arcMin = 75;
-	var arcWidth = 15;
+	var arcWidth = scale(dataset.length);
 	var arcPad = 1;
-
-	svg = d3.select("svg");
-
-	function interpolateHsl(a, b) 
-	{
-		var i = d3.interpolateString(a, b);
-		return function(t) { return d3.hsl(i(t)); };
-	}
+	var svg = d3.select("svg");
 
 	//function to draw arcs.
 	var drawArc = d3.svg.arc()
-		.innerRadius(function(d, i)
-		{ 
-			if (d.name == 'TARGET') return arcMin + i * arcWidth + arcPad + 1
-			else return arcMin + i * arcWidth + arcPad +1
-		})
-		.outerRadius(function(d, i)
-		{ 
-			if (d.name == 'TARGET') return arcMin + i * arcWidth + arcPad + 1
-			else return arcMin + (i + 1) * arcWidth 
-		})
+		.innerRadius(function(d, i) { return arcMin + i * arcWidth + arcPad + 1})
+		.outerRadius(function(d, i) { return arcMin + (i + 1) * arcWidth })
 		.startAngle(0)
 		.endAngle(function(d){ return d.confidence * 2 * Math.PI; });
 
@@ -53,16 +33,12 @@ function render(dataset, id)
 	{
 		var interp = d3.interpolate(this._current, d);
 		this._current = d;
-		return function(t)
-		{
-			var temp = interp(t);
-			return drawArc(temp, i);
-		} 
+		return function(t){ return drawArc(interp(t), i); } 
 	};
 
 	//during transition.
 	arcs.transition()
-		.duration(1000)
+		.duration(500)
 		.attr("fill", function(d)
 		{ 
 			if (d.studentNo == id || d.myID) return YELLOW; 
@@ -137,14 +113,11 @@ function partitionStudents(data, myID)
 		}
 		sum /= arr.length;
 		sum = sum.toFixed(2);
-
-		//arr[arr.length] = {name: 'TARGET', confidence: '.4', prediction: 'Pass'};
 		arr.sort(sortStudents);
 
 		split[i] = {name: name, confidence: sum, prediction: prediction, students: arr, myID: myIDPresent};
 	}
 
-	//split[data.length/splitFactor] = {name: 'TARGET', confidence: '.4', prediction: 'Pass'};
 	split.sort(sortStudents);
 	function sortStudents(a, b) { return (a.confidence - b.confidence) }
 	return split;
