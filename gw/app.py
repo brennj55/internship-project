@@ -5,7 +5,7 @@ from random import random, randrange
 import names
 
 app = Flask(__name__)
-client = MongoClient('136.206.19.73', 27017)
+client = MongoClient('136.206.19.216', 27017)
 client.edu.authenticate('john', 'nodeSucks')
 gw = client.edu.gw
 
@@ -14,6 +14,7 @@ student_set = {}
 from flask.ext.httpauth import HTTPBasicAuth
 auth = HTTPBasicAuth()
 
+#poor authentication NEEDS TO BE CHANGED.
 @auth.get_password
 def get_password(username):
     if username == 'john':
@@ -23,50 +24,7 @@ def get_password(username):
 @auth.error_handler
 def unauthorized():
     return make_response(jsonify( { 'error': 'Unauthorized access' } ), 401)
-
-
-# dummy data code and helper methods. 
-def create_student():
-	studentNumGen = 10 ** 7
-	studentNumber = int(round(random() * studentNumGen))
-	confidence = round(random(), 2)
-	
-	if confidence >= .4:
-		prediction = 'Pass'
-	else:
-		prediction = 'Fail'
-
-	name = str(names.get_full_name())
-
-	return { 'studentNo': studentNumber, 'name': name, 
-		'confidence': confidence, 'prediction': prediction }
-
-def update_student(student):
-	new_student = student.copy()
-	confidence = round(random(), 2)
-	new_student['confidence'] = confidence
-	if confidence >= .4:
-		new_student['prediction'] = 'Pass'
-	else:
-		new_student['prediction'] = 'Fail'
-
-	return new_student
-
-def create_module_data(moduleName):
-	module = { moduleName : {} }
-	populate_weeks(module[moduleName])
-
-	return module
-
-def populate_weeks(module):
-
-	students = []
-	for i in range (0, 100):
-		students.append(create_student())
-
-	for i in range(1, 13):
-		new_students = [update_student(j) for j in students]
-		module['week' + str(i)] = {'accuracy': round(random(), 2), 'week': i, 'students': new_students}
+#poor authentication NEEDS TO BE CHANGED.
 
 #helper method to get the current week. 
 def find_current(module):

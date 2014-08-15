@@ -2,7 +2,7 @@ body { font-family: Ubuntu, sans-serif; }
 
 /*
  * Navbar
- */
+ 
 
 .navbar
 {
@@ -36,4 +36,7 @@ h1, h2, h3 { color: #7f8a9a;}
 .green { background: #4cb748; }
 .push-down { padding-top: 2%; }
 path:hover{ fill: #4cb748;}
-circle:hover{ fill: #4cb748;}
+circle:hover{ fill: #d3d3d3;}
+.spacer {
+	margin-top: 60px;
+}
