@@ -1,0 +1,27 @@
+Mon Aug 18 09:23:01.531 [initandlisten] MongoDB starting : pid=1422 port=27017 dbpath=/data/db/ 32-bit host=vagrant-ubuntu-trusty-32
+Mon Aug 18 09:23:01.532 [initandlisten] 
+Mon Aug 18 09:23:01.532 [initandlisten] ** NOTE: This is a 32 bit MongoDB binary.
+Mon Aug 18 09:23:01.532 [initandlisten] **       32 bit builds are limited to less than 2GB of data (or less with --journal).
+Mon Aug 18 09:23:01.533 [initandlisten] **       Note that journaling defaults to off for 32 bit and is currently off.
+Mon Aug 18 09:23:01.533 [initandlisten] **       See http://dochub.mongodb.org/core/32bit
+Mon Aug 18 09:23:01.533 [initandlisten] 
+Mon Aug 18 09:23:01.533 [initandlisten] db version v2.4.10
+Mon Aug 18 09:23:01.534 [initandlisten] git version: e3d78955d181e475345ebd60053a4738a4c5268a
+Mon Aug 18 09:23:01.534 [initandlisten] build info: Linux bs-linux32.10gen.cc 2.6.21.7-2.fc8xen #1 SMP Fri Feb 15 12:39:36 EST 2008 i686 BOOST_LIB_VERSION=1_49
+Mon Aug 18 09:23:01.534 [initandlisten] allocator: system
+Mon Aug 18 09:23:01.534 [initandlisten] options: { fork: true, logpath: "/vagrant/logs/mongodb.log" }
+Mon Aug 18 09:23:01.535 [initandlisten] exception in initAndListen: 10296 
+*********************************************************************
+ ERROR: dbpath (/data/db/) does not exist.
+ Create this directory or give existing directory in --dbpath.
+ See http://dochub.mongodb.org/core/startingandstoppingmongo
+*********************************************************************
+, terminating
+Mon Aug 18 09:23:01.536 dbexit: 
+Mon Aug 18 09:23:01.537 [initandlisten] shutdown: going to close listening sockets...
+Mon Aug 18 09:23:01.537 [initandlisten] shutdown: going to flush diaglog...
+Mon Aug 18 09:23:01.537 [initandlisten] shutdown: going to close sockets...
+Mon Aug 18 09:23:01.538 [initandlisten] shutdown: waiting for fs preallocator...
+Mon Aug 18 09:23:01.538 [initandlisten] shutdown: closing all files...
+Mon Aug 18 09:23:01.539 [initandlisten] closeAllFiles() finished
+Mon Aug 18 09:23:01.539 dbexit: really exiting now
