@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatiable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+        {% if title %}
+    	<title>PredictED: {{ title }}</title>
+    	{% else %}
+    	<title>PredictED</title>
+    	{% endif %}
+    </head>
+
+    <body>
+    	<!-- Navifation. -->
+		<nav class="navbar navbar-default jumbo" role="navigation">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-4 col-sm-3 col-md-2">
+						<div class="navbar-header">	
+			      			<h1>PredictED</h1>
+			    		</div>
+			    	</div>
+		    	</div>
+			</div>
+		</nav>
+		<!-- End Navifation. -->
+
+		<!-- Content -->
+		<div class="container">
+		{% block content %}{% endblock %}
+		</div>
+		<!-- End Content -->
+
+
+
+    	{% if script %}
+    	<div>
+    	
+	    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	    	<script src="{{ url_for('static', filename='js/jquery.countdown.js') }}"></script>
+			<script>
+				var FIVE_MINUTES = 5.01*60000;
+				$('#clock').countdown(new Date(new Date().getTime() + FIVE_MINUTES)).on('update.countdown', function(event) 
+				{
+					var format = '%M:%S';
+					$(this).html(event.strftime(format));
+					if (event.strftime(format) == '00:01')
+					{
+						window.location = "http://www.dcu.ie";
+					}
+				})
+
+			</script>
+	    	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+			<script> 
+				var data = {{ json | tojson | safe}}; 
+				
+				//this will be passed via jsonflask. need to make hidden?
+				var myID = {{ ID }};
+				
+				data.students.sort(sortStudents);
+				function sortStudents(a, b) { return (a.confidence - b.confidence) }
+			</script>
+			<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+		</div>
+		{% endif %}
+
+		<!-- Footer -->
+		<div class="lb-footer footer">
+			<div class="container ">
+	      		<div class="row">
+	      			<div class="col-xs-3 col-md-1 col-md-offset-1">
+	      				<a href="http://www.dcu.ie" target="_blank"><img src="{{ url_for('static', filename='images/dcu.gif') }}" class="img-responsive"></a>
+	      			</div>
+
+	      			<div class="col-xs-3 col-md-1 col-md-offset-3">
+	      				<a href="https://www.insight-centre.org/" target="_blank"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a>
+	      			</div>
+
+	      			<div class="col-xs-3 col-md-1 push-down col-md-offset-3">
+	      				<a href="http://moodle.dcu.ie" target="_blank"><img src="{{ url_for('static', filename='images/moodle.png') }}" class="img-responsive"></a>
+	      			</div>
+	      		</div>
+	      	</div>
+    	</div>
+    	<!-- End Footer -->
+    </body>
+</html>

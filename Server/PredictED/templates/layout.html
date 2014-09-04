@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatiable" content="IE=edge">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin">
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+
+        <title>PredictED: {{ name }}</title>
+    </head>
+
+    <body>
+    	<!-- Navifation. -->
+		<nav class="navbar navbar-default jumbo" role="navigation">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-4 col-sm-3 col-md-2">
+						<div class="navbar-header">	
+			      			<!--<a class="navbar-brand" href="/"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a> --> <h1>PredictED</h1>
+			    		</div>
+			    	</div>
+		    	</div>
+			</div>
+		</nav>
+		<!-- End Navifation. -->
+
+		<!-- Content -->
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<h1 class="text-center">Overview of {{ module }} for {{ name }}</h1>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-5 col-md-offset-1">
+					<!-- Table for legend. -->
+					<div class="panel panel-default text-center">
+						<div class="panel-heading">
+					    	
+					  	</div>
+					  	
+						<table class="table table-bordered">
+							<tbody>
+								<tr>
+									<td><span class="badge red">Red</span></td>
+									<td>Hasn't reached target</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge blue">Blue</span></td>
+									<td>Has reached target</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge yellow">Yellow</span></td>
+									<td>This is you</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge green">Green</span></td>
+									<td>Item currently highlighted</td>
+								</tr>
+
+								<tr>
+									<td><span class="badge grey">Grey circle</span></td>
+									<td>Click to go back to the top level</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- End Table for legend. -->
+
+					<!-- What is this info -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3>What is this?</h3>
+							<div class="well well-lg">
+								<p>
+									Welcome to the interactive leaderboard for module {{ module }}. This displays the progress of each student in terms of Moodle engagement in ranked order. Your progress can be seen in the yellow circle. If you lie below the target, this means that our programme predicts that you are at risk of failing this module based on your Moodle activity this week. 
+								</p>
+
+								<p>
+									To increase your score to meet the target you are advised to engage more with the Moodle platform. Moodle is a learning tool to help you with your studies and has been found to correlate with student pass rates across the university.
+								</p>
+							</div>
+							
+						</div>
+					</div>
+					<!-- End What is this info -->
+
+					<!-- Time Limit description -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3>This page has a time limit!</h3>
+							<p>You can only view this page for a certain amount of time before the page expires,
+							please be wise and view it carefully before it is gone forever!</p>
+						</div>
+					</div>
+					<!-- End Time Limit description -->
+				</div>
+
+				<div class="col-md-6 text-center">
+					<h2>Rankings</h2>
+					<h3 id="who">Hover over the bars</h3>	
+	        	 	<div id="chart">
+
+					</div>
+
+					<!-- Time Limit button -->
+					<div class="countdown">
+						<div class="text-center alert alert-danger pull-right" id="clock"></div>
+					</div>
+					<!-- End Time Limit button -->
+				</div>
+			</div>
+		</div>
+		<!-- End Content -->
+
+		<!-- Footer -->
+		<div class="lb-footer">
+			<div class="container">
+	      		<div class="row">
+	      			<div class="col-xs-3 col-md-1 col-md-offset-1">
+	      				<a href="http://www.dcu.ie" target="_blank"><img src="{{ url_for('static', filename='images/dcu.gif') }}" class="img-responsive"></a>
+	      			</div>
+
+	      			<div class="col-xs-3 col-md-1 col-md-offset-3">
+	      				<a href="https://www.insight-centre.org/" target="_blank"><img class="img-responsive" src="{{ url_for('static', filename='images/insight.png') }}"></a>
+	      			</div>
+
+	      			<div class="col-xs-3 col-md-1 push-down col-md-offset-3">
+	      				<a href="http://moodle.dcu.ie" target="_blank"><img src="{{ url_for('static', filename='images/moodle.png') }}" class="img-responsive"></a>
+	      			</div>
+	      		</div>
+	      	</div>
+    	</div>
+    	<!-- End Footer -->
+
+    	<div>
+	    	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	    	<script src="{{ url_for('static', filename='js/jquery.countdown.js') }}"></script>
+			<script>
+				var FIVE_MINUTES = 5.01*60000;
+				$('#clock').countdown(new Date(new Date().getTime() + FIVE_MINUTES)).on('update.countdown', function(event) 
+				{
+					var format = '%M:%S';
+					$(this).html(event.strftime(format));
+					if (event.strftime(format) == '00:01')
+					{
+						window.location = "http://www.dcu.ie";
+					}
+				})
+
+			</script>
+	    	<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+			<script> 
+				var data = {{ json | tojson | safe}}; 
+				
+				//this will be passed via jsonflask. need to make hidden?
+				var myID = {{ ID }};
+				
+				data.students.sort(sortStudents);
+				function sortStudents(a, b) { return (a.confidence - b.confidence) }
+			</script>
+			<script src="{{ url_for('static', filename='js/leaderboard.js') }}"></script>
+		</div>
+    </body>
+</html>

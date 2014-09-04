@@ -1,0 +1,42 @@
+body { font-family: Ubuntu, sans-serif; }
+
+/*
+ * Navbar
+ 
+
+.navbar
+{
+	padding-bottom: 80px;
+}
+
+/*
+ * Footer
+ */
+
+.lb-footer 
+{
+ 	padding: 40px 0;
+  	color: #999;
+ 	text-align: center;
+  	background-color: #f9f9f9;
+  	border-top: 1px solid #e5e5e5;
+}
+
+.lb-footer p:last-child { margin-bottom: 0; }
+
+/* 
+ * Insight colours.
+ */
+
+h1, h2, h3 { color: #7f8a9a;}
+.red { background-color: #c13122;}
+.blue { background: #3d5ba9;}
+.yellow { background: #ffbc12;}
+.grey { background: #e3e3e3;}
+.green { background: #4cb748; }
+.push-down { padding-top: 2%; }
+path:hover{ fill: #4cb748;}
+circle:hover{ fill: #d3d3d3;}
+.spacer {
+	margin-top: 60px;
+}
