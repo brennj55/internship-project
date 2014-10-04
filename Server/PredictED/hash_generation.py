@@ -1,8 +1,8 @@
 import hashlib 
 from pymongo import MongoClient
 
-client = MongoClient('136.206.19.216', 27017)
-client.edu.authenticate('john', 'nodeSucks')
+client = MongoClient()
+client.edu.authenticate()
 gw = client.edu.gw
 
 hash_storage = MongoClient()

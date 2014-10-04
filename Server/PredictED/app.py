@@ -9,7 +9,7 @@ hash_storage = hash_storage.edu.hashes
 
 @app.route('/<hash_value>')
 def generate_page(hash_value = None):
-	#check if hash is reaaaal.
+	#check if hash is real.
 	hash_in_db = hash_storage.find_one({'_id': hash_value})
 	if hash_in_db is None:
 		abort(404)

@@ -2,8 +2,8 @@ from pymongo import MongoClient
 from random import random, randrange
 import names
 
-client = MongoClient('136.206.19.216', 27017)
-client.edu.authenticate('john', 'nodeSucks')
+client = MongoClient()
+client.edu.authenticate()
 gw = client.edu.gw
 
 # dummy data code and helper methods. 

@@ -3,8 +3,8 @@ from pymongo import MongoClient
 from random import random, randrange
 
 app = Flask(__name__)
-client = MongoClient('136.206.19.216', 27017)
-client.edu.authenticate('john', 'nodeSucks')
+client = MongoClient() #edited out.
+client.edu.authenticate() #edited out
 gw = client.edu.gw
 
 student_set = {}
@@ -15,14 +15,13 @@ auth = HTTPBasicAuth()
 #poor authentication NEEDS TO BE CHANGED.
 @auth.get_password
 def get_password(username):
-    if username == 'john':
-        return 'brennan'
+    if username == 'you wont see':
+        return 'nope not for you..'
     return None
 
 @auth.error_handler
 def unauthorized():
     return make_response(jsonify( { 'error': 'Unauthorized access' } ), 401)
-#poor authentication NEEDS TO BE CHANGED.
 
 #helper method to get the current week. 
 def find_current(module):
