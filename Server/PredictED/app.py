@@ -16,7 +16,7 @@ def generate_page(hash_value = None):
 
 	#only let the student view if it hasn't been viewed before. 
 	if not hash_in_db['student']['has_viewed']:
-		request = requests.get("http://localhost:5001" + hash_in_db['student']['link'], auth=('john', 'brennan'))
+		request = requests.get("http://localhost:5001" + hash_in_db['student']['link'])
 		json = request.json()
 
 		#get rid of everyones student id except the users to ensure you can highlight particular bar on page. 
