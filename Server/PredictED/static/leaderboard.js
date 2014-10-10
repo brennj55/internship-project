@@ -82,8 +82,8 @@ function render(dataset, id)
 		})
       	.attr("d", drawArc)
       	.each(function(d){ this._current = d; })
-      	.on("click", function(d, i) { if (d.students != undefined) render(d.students, id) })
-      	.on("mouseover", mouseover);
+      	.on("click", function(d, i) { if (d.students != undefined) render(d.students, id) });
+      	//.on("mouseover", mouseover);
 
     arcs.exit()
     	.transition(1000)
